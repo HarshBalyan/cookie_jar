@@ -135,6 +135,7 @@ defmodule CookieJar do
     cookies =
       cookie_strs
       |> Enum.map(&Cookie.parse(&1, uri))
+      |> IO.inspect(label: "dep_pour_cookies_parse")
       |> Enum.reject(&is_nil/1)
 
     GenServer.cast(jar, {:pour, cookies})

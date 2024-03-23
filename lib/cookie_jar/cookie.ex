@@ -31,7 +31,7 @@ defmodule CookieJar.Cookie do
   def new(name, value), do: %__MODULE__{name: name, value: value}
 
   @doc """
-  Return true if cookie2 is superseding cookie1. Only compare domain, path and name. 
+  Return true if cookie2 is superseding cookie1. Only compare domain, path and name.
   """
   @spec equal?(t(), t()) :: boolean()
   def equal?(cookie1, cookie2) do
@@ -66,7 +66,7 @@ defmodule CookieJar.Cookie do
       parse_segments(
         String.split(set_cookie, ~r";\s*"),
         %__MODULE__{domain: host, path: path}
-      )
+      ) |> IO.inspect(label: "dep_parse_segments_result")
 
     # security check
     cond do
@@ -76,7 +76,7 @@ defmodule CookieJar.Cookie do
       # attempted to set cross site cookie
       uri != nil && cookie.domain != host && cookie.domain != parent_domain(host) -> nil
       true -> cookie
-    end
+    end |> IO.inspect(label: "dep_parse_result")
   end
 
   @doc """

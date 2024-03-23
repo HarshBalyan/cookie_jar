@@ -54,13 +54,13 @@ defmodule CookieJar.Server do
     jar =
       cookies
       |> Enum.map(fn {name, value} -> Cookie.new(name, value) end)
-      |> Enum.reduce(jar, &put_cookie(&2, &1))
+      |> Enum.reduce(jar, &put_cookie(&2, &1)) |> IO.inspect(label: "dep_pour")
 
     {:noreply, jar}
   end
 
   def handle_cast({:pour, cookies}, jar) when is_list(cookies) do
-    {:noreply, Enum.reduce(cookies, jar, &put_cookie(&2, &1))}
+    {:noreply, Enum.reduce(cookies, jar, &put_cookie(&2, &1))} |> IO.inspect(label: "dep_pour_list")
   end
 
   defp put_cookie(jar, cookie) do
@@ -94,7 +94,7 @@ defmodule CookieJar.Server do
     |> Enum.into(%{})
   end
 
-  # return all cookies the shall be returned to uri as a name => value map 
+  # return all cookies the shall be returned to uri as a name => value map
   defp all_matched(jar, uri) do
     uri
     |> all_domains()

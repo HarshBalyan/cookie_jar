@@ -33,6 +33,7 @@ if Code.ensure_loaded?(HTTPoison) do
     end
 
     defp add_jar_cookies(jar, headers, url) do
+      IO.inspect(url, label: "dep_add_jar_cookies_url")
       jar_cookies = CookieJar.label(jar, url)
 
       headers
@@ -41,9 +42,10 @@ if Code.ensure_loaded?(HTTPoison) do
         "#{user_cookies}; #{jar_cookies}"
       end)
       |> Enum.into([])
+      |> IO.inspect(label: "dep_add_jar_cookies")
     end
 
-    defp update_jar_cookies(_jar, {:error, %HTTPoison.Error{} = error}, _url), do: {:error, error}
+    defp update_jar_cookies(_jar, {:error, %HTTPoison.Error{} = error}, _url), do: {:error, error} |> IO.inspect(label: "dep_update_jar_cookies_error")
 
     defp update_jar_cookies(jar, %HTTPoison.Response{headers: headers} = response, url) do
       do_update_jar_cookies(jar, headers, url)
@@ -58,12 +60,18 @@ if Code.ensure_loaded?(HTTPoison) do
     defp do_update_jar_cookies(jar, headers, url) do
       cookies =
         Enum.flat_map(headers, fn {key, value} ->
+          IO.inspect({key, value}, label: "dep_do_update_jar_cookies_resp_headers")
           case String.downcase(key) do
             "set-cookie" -> [value]
             _ -> []
           end
         end)
 
+      IO.inspect(%{
+        jar: jar,
+        cookies: cookies,
+        url: url
+      }, label: "dep_do_update_jar_cookies_pour")
       CookieJar.pour(jar, cookies, url)
     end
   end
